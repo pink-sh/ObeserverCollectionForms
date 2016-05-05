@@ -4,8 +4,8 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import org.iotc.observer.forms.sql.PersistanceImplementation;
@@ -34,7 +34,8 @@ public class Utils {
 	}
 	
 	public List<String> readInputStreamAsString(InputStream inputStream) throws IOException {
-		BufferedReader in = new BufferedReader(new InputStreamReader(inputStream));
+		Charset inputCharset = Charset.forName("UTF8");
+		BufferedReader in = new BufferedReader(new InputStreamReader(inputStream, inputCharset));
 		List<String> responseData = new ArrayList<String>();
 		String line;
 		while ((line = in.readLine()) != null) {

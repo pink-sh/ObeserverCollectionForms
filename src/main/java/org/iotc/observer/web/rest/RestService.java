@@ -73,24 +73,6 @@ public class RestService {
 		pi.insertUser(user);
 		return Response.status(200).build();
 	}
-	
-	/*@Path("updateForm/")
-	@POST
-	@Produces("application/json;charset=utf-8")
-	@Consumes(MediaType.APPLICATION_JSON)
-	public Response updateForm(String jsonRequest) throws JSONException {
-		JSONObject jsonObject = new JSONObject(jsonRequest);
-		ObjectMapper mapper = new ObjectMapper().registerModule(new JsonOrgModule());
-		OutForm data = mapper.convertValue(jsonObject, OutForm.class);
-		Utils utils = new Utils();
-		try {
-			utils.saveData(data);
-			return Response.status(200).entity(jsonObject.toString()).build();
-		} catch (Exception ex) {
-			return Response.status(500).build();
-		}
-	} */
-		
  
 	@Path("amILogged/")
 	@GET
@@ -212,54 +194,6 @@ public class RestService {
 		} catch (Exception ex) {
 			return Response.status(500).build();
 		}
-		
-		/*JSONObject jsonObject = new JSONObject();
-		PersistanceInterface pi = new PersistanceImplementation();
-		Utils utils = new Utils();
-		User user = pi.selectUser();
-		List<Forms> forms = pi.getForms();
-		Integer i = 0;
-		DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
-		List<Integer> idOfMandatoryFields = utils.getListOfMandatoryFieldsId();
-		for (Forms form : forms) {
-			
-			List<Data> filledMandatoryFields = pi.getFilledMandatoryFields(idOfMandatoryFields, form.getId());
-			
-			Countries country = pi.getCountryByIso3(form.getCountry());
-			HashMap<String, String> hash = new HashMap<String, String>();
-			hash.put("ID", form.getId().toString());
-			hash.put("NAME", form.getName());
-			hash.put("DATE", dateFormat.format(form.getDate()));
-			hash.put("MODIFY", dateFormat.format(form.getModify()));
-			hash.put("COUNTRYISO2", country.getIso2());
-			hash.put("COUNTRYISO3", country.getIso3());
-			if (filledMandatoryFields.size() == idOfMandatoryFields.size()) {
-				hash.put("COMPLETE", "TRUE");
-			} else {
-				hash.put("COMPLETE", "FALSE");
-			}
-			if (user.getLang().equalsIgnoreCase("EN")) {
-				hash.put("COUNTRY", country.getNameEn());
-			}
-			else if (user.getLang().equalsIgnoreCase("FR")) {
-				hash.put("COUNTRY", country.getNameFr());
-			}
-			else if (user.getLang().equalsIgnoreCase("ES")) {
-				hash.put("COUNTRY", country.getNameEs());
-			}
-			else if (user.getLang().equalsIgnoreCase("AR")) {
-				hash.put("COUNTRY", country.getNameAr());
-			}
-			else if (user.getLang().equalsIgnoreCase("ZH")) {
-				hash.put("COUNTRY", country.getNameZh());
-			}
-			else if (user.getLang().equalsIgnoreCase("RU")) {
-				hash.put("COUNTRY", country.getNameRu());
-			}
-			jsonObject.put(i.toString(), hash);
-			i += 1;
-		}
-		return Response.status(200).entity(jsonObject.toString()).build();*/
 	}
 	  
 	@Path("updateForm/")
@@ -365,5 +299,14 @@ public class RestService {
 		} catch (JsonProcessingException e) {
 			return Response.status(500).build();
 		}
+	}
+	
+	@Path("wipeOut/")
+	@GET
+	@Produces("application/json;charset=utf-8")
+	public Response wipeOut() {
+		PersistanceInterface pi = new PersistanceImplementation();
+		pi.wipeOut();
+		return Response.status(200).build();
 	}
 }
