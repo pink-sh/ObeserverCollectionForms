@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<data-sources>
+	<data-source id="derby-1545c9da718-3ad5fc14a0cca608" provider="generic" driver="derby" name="Derby - ObserversDB" create-date="1461842730167" login-date="1461842759243" save-password="true" show-system-objects="true" read-only="false">
+		<connection server="" database="ObserversDB" url="jdbc:derby:ObserversDB" user="me" password="HgFmwQ==" type="dev">
+			<bootstrap/>
+		</connection>
+	</data-source>
+	<data-source id="derby-1545caefd22-130e3cd311f899a7" provider="generic" driver="derby" name="Derby - ObserversDatabase" create-date="1461843895256" login-date="1461846318940" save-password="true" show-system-objects="true" read-only="false">
+		<connection server="" database="ObserversDatabase" url="jdbc:derby:ObserversDatabase" user="me" password="HgFmwQ==" type="dev">
+			<bootstrap/>
+		</connection>
+	</data-source>
+	<data-source id="derby-1545cafd6bd-7a81e71efa96b23b" provider="generic" driver="derby" name="Derby - ObserversDatabase" create-date="1461843926960" login-date="1461843940297" save-password="true" show-system-objects="true" read-only="false">
+		<connection server="" database="ObserversDatabase" url="jdbc:derby:ObserversDatabase" user="me" password="HgFmwQ==" type="dev">
+			<bootstrap/>
+		</connection>
+	</data-source>
+	<data-source id="hsqldb_embedded-1545d052454-251565c59d74958a" provider="generic" driver="hsqldb_embedded" name="HSQLDB - ObserverDatabase" create-date="1461849523547" login-date="1462351518331" save-password="true" show-system-objects="true" read-only="false">
+		<connection server="" database="ObserverDatabase" url="jdbc:hsqldb:file:ObserverDatabase" user="me" password="HgFmwQ==" type="dev">
+			<bootstrap/>
+		</connection>
+	</data-source>
+	<data-source id="hsqldb_embedded-1547af3fd67-3cde0379f79482e2" provider="generic" driver="hsqldb_embedded" name="HSQLDB - file" create-date="1462351714707" save-password="true" show-system-objects="true" read-only="false">
+		<connection server="" database="" url="jdbc:hsqldb:file" user="" type="dev">
+			<bootstrap/>
+		</connection>
+	</data-source>
+	<data-source id="hsqldb_embedded-1547af624d0-40e69cecc185a680" provider="generic" driver="hsqldb_embedded" name="HSQLDB - ObserversDatabase" create-date="1462351845235" save-password="true" show-system-objects="true" read-only="false">
+		<connection server="" database="" url="jdbc:hsqldb:file:ObserversDatabase" user="me" password="HgFmwQ==" type="dev">
+			<bootstrap/>
+		</connection>
+	</data-source>
+</data-sources>
