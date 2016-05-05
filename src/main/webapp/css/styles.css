@@ -1,0 +1,168 @@
+.bodyDiv {
+	height: 100%;
+	width: 100%;
+	position: absolute;
+}
+
+.headerTop {
+	height: 80px;
+	width: 100%;
+	position: fixed;
+	top: 0;
+	z-index: 100;
+	background: linear-gradient(to left, rgba(255,255,255,0.6), rgba(83,191,236,1));
+}
+
+.container {
+	top: 95px;
+	height: 100%;
+	width: 100%;
+	position: relative;
+	margin-left: 25px;
+	margin-right: 25px;
+}
+
+.languageSelection {
+	float: right;
+	margin-right: 30px;
+	width: 150px;
+	height: 40px;
+	top: 20px;
+	position: relative;
+}
+
+.footer {
+	bottom: 0;
+    position: fixed;
+    height: 25px;
+    width: 100%;
+    background: linear-gradient(to left, rgba(255,0,0,0), rgba(83,191,236,1));
+    font-size: 0.8em;
+    padding-top: 3px;
+    padding-left: 100px;
+}
+
+.title {
+	float: left;
+	margin-left: 50px;
+	padding-left: 50px;
+	width: 450px;
+	height: 40px;
+	top: 20px;
+	position: relative;
+	font-size: 1.4em
+}
+
+.bold {
+	font-weight: bold;
+}
+
+.userInfo {
+	width: 95%;
+	height: 25px;
+	border-bottom: 1px solid #888888;
+}
+
+.mainMenu {
+	width: 95%;
+	height: 400px;
+}
+
+.menuEntry {
+	margin-top: 20px;
+	height: 30px;
+	width: 95%;
+	background: linear-gradient(to left, rgba(255,0,0,0), rgba(83,191,236,1));
+}
+
+.menuEntryText {
+	margin-left: 20px;
+	padding-top: 4px;
+	font-weight: bold;
+	cursor: pointer;
+}
+
+.goToMainMenu {
+	float: right;
+	font-weight: bold;
+	color: #2a6497;
+	height: 25px;
+	margin-right: 10px;
+	cursor: pointer;
+}
+
+.newForm {
+	margin-top: 10px;
+}
+
+.formList {
+	padding-left: 20px;
+}
+
+.formFieldEntry {
+	height: 60px;
+}
+
+.linkEntry {
+	font-weight: bold;
+	color: #2a6497;
+	height: 25px;
+	cursor: pointer;
+	width: 30%;
+	position: absolute;
+}
+
+.linkEntryRight {
+	font-weight: bold;
+	color: #2a6497;
+	height: 25px;
+	cursor: pointer;
+	float: right;
+	width: 10%;
+	margin-right: 10px;
+}
+
+.subMenu {
+	position: relative;
+    height: 30px;
+}
+
+.export {
+	margin-left: 40px;
+}
+
+.delete {
+	margin-left: 40px;
+	color: red;
+}
+
+.formNameShowMenu {
+	font-size: 1em;
+	margin-right:20px;
+}
+
+.formNameShowMenuName {
+	width: 10%;
+	float: left;
+}
+
+.formNameShowMenuData {
+	width: 20%;
+	float: left;
+}
+.formDateShowMenu {
+	font-size: 0.7em;
+	font-weight: normal;
+}
+
+.formDateShowMenuBold {
+	font-size: 0.7em;
+	font-weight: bold;
+}
+
+.asterisc {
+  color: red;
+}
+
+.green { color: green; }
+.red { color: red; }

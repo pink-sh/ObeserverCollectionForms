@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Observer Form</title>
+<link rel="stylesheet" href="css/bootstrap.min.css">
+<link rel="stylesheet" href="css/bootstrap.min.css.map">
+<link rel="stylesheet" href="css/bootstrap-theme.min.css">
+<link rel="stylesheet" href="css/toaster.css">
+<link rel="stylesheet" href="css/styles.css">
+<script type="text/javascript" src="js/jquery-1.12.3.min.js"></script>
+<script type="text/javascript" src="js/angular.min.js"></script>
+<script type="text/javascript" src="js/bower_components/angular-translate/angular-translate.min.js"></script>
+<script type="text/javascript" src="js/bower_components/angular-translate-loader-url/angular-translate-loader-url.min.js"></script>
+<script type="text/javascript" src="js/toaster.js"></script>
+<script type="text/javascript" src="js/checklist-model.js"></script>
+<script type="text/javascript" src="js/observer.js"></script>
+</head>
+<body ng-app="observer" ng-cloak>
+ <toaster-container toaster-options="{'time-out': 3000, 'position-class': 'toast-bottom-right'}"></toaster-container>
+<div ng-controller='main-controller' class='bodyDiv' data-ng-init="init()">
+	<div class='headerTop'>
+		<div class='title' translate="TITLE">
+		</div>
+		<div class='languageSelection'>
+			<button ng-click="swapLang('en')" class='btn btn-primary btn-sm' translate="ENGLISH"></button>
+			<button ng-click="swapLang('fr')" class='btn btn-primary btn-sm' translate="FRENCH"></button>
+		</div>
+	</div>
+	<div class='container'>
+		<div ng-show='!userLogged'>
+			<p translate="INSERT_NAME"></p>
+			<input type='text' ng-model='username'>
+			<button ng-click="insertName()" class='btn btn-primary btn-sm' translate="SUBMIT"></button>
+		</div>
+		<div ng-show='userLogged'>
+			<div class='userInfo'>
+				<span translate='WELCOME'></span>&nbsp;<span class='bold'>{{username}}</span>
+				
+				<div class='goToMainMenu' translate='GOTOMAINMENU' ng-click="swapPage('menu')"></div>
+				<div class='goToMainMenu' translate='SAVEFORM' ng-click="save()" ng-show="saveShow"></div>
+			</div>
+			<div class='mainMenu' ng-show='menuVisible'>
+				<div class='menuEntry'><div translate='STARTNEWFORM' class='menuEntryText' ng-click="swapPage('new_form')"></div></div>
+				<div class='formList' ng-show='forms.length'>
+					<div style='margin-top: 25px;'></div>
+					<div class='userInfo'>
+						<span translate='SELECTAFORM'></span>
+					</div>
+					<div class='menuEntry' ng-repeat='form in forms'>
+						<div class='menuEntryText'>
+							<span class="formNameShowMenu formNameShowMenuName" ng-click='getForm(form.id)'>
+								<span class="green" ng-show="form.formFilled">{{form.name}}</span>
+								<span class="red" ng-show="!form.formFilled">{{form.name}}</span>
+							</span>
+							<span class="formNameShowMenuData">
+								<span class="formDateShowMenu" translate="INSERTEDONCOLUMN" ng-click='getForm(form.id)'></span>
+								<span class="formDateShowMenuBold" ng-click='getForm(form.id)'>{{form.sdate}}</span>
+								<span class="formDateShowMenu" translate="COUNTRYCOLUMN" ng-click='getForm(form.id)'></span>
+								<span class="formDateShowMenuBold" ng-click='getForm(form.id)'>{{form.country}}</span>
+							</span>
+							<span class="export" ng-click="swapPage('menu')" ng-show="form.formFilled">
+								<a href="REST/rest_service/export/{{form.id}}" translate="EXPORT"></a>
+							</span>
+							<span class="delete" ng-click="deleteForm(form.id)" translate="DELETEFORM" ng-confirm-delete-click="You are about to overwrite your PUBLISHED content!! Are you SURE you want to publish?">
+							</span>
+						</div>
+					</div>
+				</div>
+			</div>
+			
+			<div class='newForm' ng-show='insertNewFormVisible' ng-cloak>
+				<p translate="INSERTFORMNAME"></p>
+				<input type='text' ng-model='formName'>
+				<p translate="FORCOUNTRY"></p>
+				<select ng-model='selectedCountry' ng-cloak>
+					<option ng-repeat="country in countries" value="{{country.key}}">{{country.text}}</option>
+				</select><br /><br />
+				<button ng-click="insertNewForm()" class='btn btn-primary btn-sm' translate="SUBMIT"></button>
+			</div>
+		</div>
+		
+		<div ng-show='formVisible' ng-cloak>
+			<div class='menuEntry' ng-repeat='formSection in currentForm.outSection' ng-click="getFormSection(formSection.name)">
+				<div class='menuEntryText'>{{formSection.name}}</div>
+			</div>
+		</div>
+		
+		<div ng-show='sectionVisible' ng-cloak>
+			<div class='subMenu'>
+				<div class='linkEntry' translate='BACKTOSECTIONLIST' ng-click="swapPage('form')"></div>
+			</div>
+			<div class='menuEntry'><div class='menuEntryText'>{{currentSection.name}}</div></div>
+			<br /><hr /><br />
+			<div class='formFieldEntry' ng-repeat='formField in currentSection.outField'>
+				<div style="float: left; width: 80px;">
+					<span translate>{{formField.label}}</span>
+					<span class="asterisc" ng-show="formField.mandatory">*</span>
+				</div>
+				<div ng-switch="formField.type">
+					<div ng-switch-when='text'>
+						<input type='text' ng-model='formField.value'>
+					</div>
+					<div ng-switch-when='dropdown'>
+						<select ng-model='formField.value'>
+							<option value='NULL' translate="SELECTONE" disabled></option>
+							<option ng-repeat='cl in formField.outControlledList' value="{{cl.key}}">{{cl.value}}</option>
+						</select>
+					</div>
+					<div ng-switch-when='radio'>
+						<div ng-repeat='cl in formField.outControlledList' style="float:left;">
+							<input type="radio" name="formField.name" value="{{cl.key}}" ng-model="formField.value">{{cl.value}}
+						</div>
+					</div>
+					<div ng-switch-when='checkbox'>
+						<div ng-repeat='cl in formField.outControlledList' style="float:left;">
+							<!-- <input type="checkbox" name="formField.name" value="{{cl.key}}" ng-model="tmpCheckBoxes[formField.name][cl.value]" ng-click="checkBoxSwitch(formField.outControlledList, formField.name, formField.value, tmpCheckBoxes[formField.name])">{{cl.value}} -->
+							<input type="checkbox" name="formField.name" checklist-value="cl.key" checklist-model="formField.value">{{cl.value}}
+						</div>
+					</div>
+					<div ng-switch-when='multiple'>
+						<select multiple ng-model='formField.value'>
+							<option ng-repeat='cl in formField.outControlledList' value="{{cl.key}}">{{cl.value}}</option>
+						</select>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class='footer'>
+		<span translate="COPYRIGHT"></span> <a href='http://www.iotc.org' target='blank'>IOTC&copy;</a>&nbsp;<script>document.write(new Date().getFullYear())</script>
+	</div>
+</div>
+
+</body>
+</html>

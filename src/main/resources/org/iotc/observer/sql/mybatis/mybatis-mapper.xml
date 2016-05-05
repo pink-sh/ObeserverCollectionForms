@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.iotc.observer.forms.sql.PersistanceInterface">
+<!-- org.iotc.observers.forms.sql.models -->
+	<resultMap id="TableResultMap" type="org.iotc.observer.forms.sql.models.Tables" >
+		<result column="tableName" property="TableName" jdbcType="VARCHAR" />
+	</resultMap>
+	<resultMap id="OWorkResultMap" type="org.iotc.observer.forms.sql.models.OWork" >
+		<result column="tableName" property="TableName" jdbcType="VARCHAR" />
+	</resultMap>
+	<resultMap id="LabelsResultMap" type="org.iotc.observer.forms.sql.models.Labels" >
+		<result column="NAME" property="name" jdbcType="VARCHAR" />
+		<result column="VAL" property="val" jdbcType="VARCHAR" />
+		<result column="LANG" property="lang" jdbcType="VARCHAR" />
+	</resultMap>
+	<resultMap id="LanguagesResultMap" type="org.iotc.observer.forms.sql.models.Languages" >
+		<result column="NAME" property="name" jdbcType="VARCHAR" />
+		<result column="CODE" property="code" jdbcType="VARCHAR" />
+	</resultMap>
+	<resultMap id="UserResultMap" type="org.iotc.observer.forms.sql.models.User" >
+		<result column="NAME" property="name" jdbcType="VARCHAR" />
+		<result column="LANG" property="lang" jdbcType="VARCHAR" />
+	</resultMap>
+	<resultMap id="FormResultMap" type="org.iotc.observer.forms.sql.models.Forms" >
+		<result column="ID" property="id" jdbcType="INTEGER" />
+		<result column="NAME" property="name" jdbcType="VARCHAR" />
+		<result column="ENTERDATE" property="date" jdbcType="DATE" />
+		<result column="MODIFYDATE" property="modify" jdbcType="DATE" />
+		<result column="COUNTRY" property="country" jdbcType="VARCHAR" />
+	</resultMap>
+	<resultMap id="FormSectionsResultMap" type="org.iotc.observer.forms.sql.models.FormSections" >
+		<result column="ID" property="id" jdbcType="INTEGER" />
+		<result column="NAME" property="name" jdbcType="VARCHAR" />
+	</resultMap>	
+	<resultMap id="FormFieldsResultMap" type="org.iotc.observer.forms.sql.models.FormFields" >
+		<result column="ID" property="id" jdbcType="INTEGER" />
+		<result column="SECTION" property="section" jdbcType="INTEGER" />
+		<result column="NAME" property="name" jdbcType="VARCHAR" />
+		<result column="LABEL" property="label" jdbcType="VARCHAR" />
+		<result column="FTYPE" property="type" jdbcType="VARCHAR" />
+		<result column="CONTROLLEDLIST" property="controlledList" jdbcType="VARCHAR" />
+		<result column="MANDATORY" property="mandatory" jdbcType="BOOLEAN" />
+	</resultMap>
+	<resultMap id="ControlledListResultMap" type="org.iotc.observer.forms.sql.models.ControlledListMap" >
+		<result column="CL_NAME" property="cl_name" jdbcType="VARCHAR" />
+		<result column="CL_KEY" property="cl_key" jdbcType="VARCHAR" />
+		<result column="CL_VALUE" property="cl_value" jdbcType="VARCHAR" />
+	</resultMap>
+	<resultMap id="ControlledListResult" type="org.iotc.observer.forms.sql.models.ControlledList" >
+		<result column="KEY" property="key" jdbcType="VARCHAR" />
+		<result column="VALUE" property="value" jdbcType="VARCHAR" />
+	</resultMap>
+	<resultMap id="DataResultMap" type="org.iotc.observer.forms.sql.models.Data" >
+		<result column="FORM" property="formId" jdbcType="INTEGER" />
+		<result column="SECTION" property="sectionId" jdbcType="INTEGER" />
+		<result column="FIELD" property="fieldId" jdbcType="INTEGER" />
+		<result column="INSERTEDVALUE" property="value" jdbcType="VARCHAR" />
+	</resultMap>
+	<resultMap id="CountriesResultMap" type="org.iotc.observer.forms.sql.models.Countries" >
+		<result column="ID" property="id" jdbcType="INTEGER" />
+		<result column="NAME_EN" property="nameEn" jdbcType="VARCHAR" />
+		<result column="NAME_FR" property="nameFr" jdbcType="VARCHAR" />
+		<result column="NAME_ES" property="nameEs" jdbcType="VARCHAR" />
+		<result column="NAME_AR" property="nameAr" jdbcType="VARCHAR" />
+		<result column="NAME_ZH" property="nameZh" jdbcType="VARCHAR" />
+		<result column="NAME_RU" property="nameRu" jdbcType="VARCHAR" />
+		<result column="ISO2" property="iso2" jdbcType="VARCHAR" />
+		<result column="ISO3" property="iso3" jdbcType="VARCHAR" />
+	</resultMap>
+	<resultMap id="SystemResultMap" type="org.iotc.observer.forms.sql.models.Sys" >
+		<result column="VERSION" property="version" jdbcType="VARCHAR" />
+	</resultMap>
+	
+	<!-- Queries -->
+	
+	<select id="GetOWork" resultMap="OWorkResultMap">
+		SELECT * FROM O_WORK;
+	</select>
+	<select id="getVersion" resultMap="SystemResultMap">
+		SELECT * FROM SYSTEM;
+	</select>
+	<update id="updateVersion">
+		UPDATE SYSTEM SET VERSION = #{version}
+	</update>
+	<select id="getLanguages" resultMap="LanguagesResultMap">
+		SELECT * FROM LANGUAGES;
+	</select>
+	<select id="getLabels" parameterType="string" resultMap="LabelsResultMap">
+		SELECT * FROM LABELS WHERE LANG = #{lang};
+	</select>
+	<select id="wipeOut">
+	  DROP SCHEMA PUBLIC CASCADE;
+	</select>
+	<select id="selectUser" resultMap="UserResultMap">
+		SELECT * FROM USERLOGGED LIMIT 1;
+	</select>
+	<insert id="insertUser" parameterType="org.iotc.observer.forms.sql.models.User">
+		INSERT INTO USERLOGGED (NAME, LANG) VALUES (#{name,jdbcType=LONGVARCHAR}, #{lang,jdbcType=VARCHAR})
+	</insert>
+	<update id="updateUserLang" parameterType="string">
+		UPDATE USERLOGGED SET LANG = #{lang}
+	</update>
+	<insert id="insertForm" parameterType="org.iotc.observer.forms.sql.models.Forms"  useGeneratedKeys="true"  keyProperty="ID">
+		<selectKey resultType="int" keyProperty="id" order="AFTER" >
+		  SELECT TOP 1 Id FROM FORMS ORDER BY Id DESC
+		</selectKey>
+		INSERT INTO FORMS (NAME, ENTERDATE, MODIFYDATE, COUNTRY) VALUES (#{name,jdbcType=LONGVARCHAR}, #{date,jdbcType=DATE}, #{modify,jdbcType=DATE}, #{country,jdbcType=VARCHAR})
+	</insert>
+	<insert id="insertFormData" parameterType="org.iotc.observer.forms.sql.models.Data">
+		INSERT INTO DATA (FORM, SECTION, FIELD, INSERTEDVALUE) VALUES (#{formId,jdbcType=INTEGER}, #{sectionId,jdbcType=INTEGER}, #{fieldId,jdbcType=INTEGER}, #{value,jdbcType=INTEGER})
+	</insert>
+	<select id="getForms" resultMap="FormResultMap">
+		SELECT * FROM FORMS;
+	</select>
+	<select id="getFormFromId" resultMap="FormResultMap">
+		SELECT * FROM FORMS WHERE ID = #{formId};
+	</select>
+	<select id="getFormSections" resultMap="FormSectionsResultMap">
+		SELECT * FROM FORMSECTIONS;
+	</select>
+	<select id="getFormSectionsFromName" resultMap="FormSectionsResultMap" parameterType="string">
+		SELECT * FROM FORMSECTIONS WHERE NAME = #{name};
+	</select>
+	<select id="getFieldsForSection" resultMap="FormFieldsResultMap" parameterType="int">
+		SELECT * FROM FORMFIELDS WHERE SECTION = #{section};
+	</select>	
+	<select id="getControlledListMap" resultMap="ControlledListResultMap" parameterType="string">
+		SELECT * FROM CONTROLLEDLIST WHERE CL_NAME = #{cl_name};
+	</select>	
+	<select id="getDataByFormAndField" resultMap="DataResultMap">
+		SELECT * FROM DATA WHERE FORM = #{formId} AND FIELD = #{fieldId};
+	</select>
+	<select id="getControlledList" resultMap="ControlledListResult">
+		SELECT "${key}" AS key, "${value}" AS VALUE FROM ${table} ORDER BY ${value}
+	</select>
+	<select id="getCountries" resultMap="CountriesResultMap">
+		SELECT * FROM COUNTRIES ORDER BY NAME_EN;
+	</select>
+	<select id="getCountryById" resultMap="CountriesResultMap">
+		SELECT * FROM COUNTRIES WHERE ID = #{id};
+	</select>
+	<select id="getCountryByIso2" resultMap="CountriesResultMap">
+		SELECT * FROM COUNTRIES WHERE ISO2 = #{iso2};
+	</select>
+	<select id="getCountryByIso3" resultMap="CountriesResultMap">
+		SELECT * FROM COUNTRIES WHERE ISO3 = #{iso3};
+	</select>
+	
+	
+	<select id="getMandatoryFields" resultMap="FormFieldsResultMap">
+		SELECT * FROM FORMFIELDS WHERE MANDATORY = TRUE;
+	</select>
+	
+	<select id="getFilledMandatoryFields" resultMap="DataResultMap">
+		SELECT *
+		    FROM DATA P
+		    WHERE FIELD in
+		    <foreach item="item" index="index" collection="list"
+		        open="(" separator="," close=")">
+		          #{item}
+		    </foreach>
+		    AND INSERTEDVALUE IS NOT NULL AND FORM = #{formId}
+	</select>
+	
+	<delete id="deleteFieldsForForm" parameterType="int">
+		DELETE FROM DATA WHERE FORM = #{formId}
+	</delete>
+	<delete id="deleteForm" parameterType="int">
+		DELETE FROM FORMS WHERE ID = #{formId}
+	</delete>
+</mapper>
