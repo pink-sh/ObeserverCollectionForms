@@ -64,15 +64,17 @@ public class Utils {
 				oField.setMandatory(field.isMandatory());
 				if (field.getControlledList() != null) {
 					ControlledListMap clMap = pi.getControlledListMap(field.getControlledList());
-					List<ControlledList> cl = pi.getControlledList(clMap.getCl_name(), clMap.getCl_value(), clMap.getCl_key());
-					List<OutControlledList> oClList = new ArrayList<OutControlledList>();
-					for (ControlledList clL : cl) {
-						OutControlledList oCl = new OutControlledList();
-						oCl.setKey(clL.getKey());
-						oCl.setValue(clL.getValue());
-						oClList.add(oCl);
+					if (clMap != null) {
+						List<ControlledList> cl = pi.getControlledList(clMap.getCl_name(), clMap.getCl_value(), clMap.getCl_key());
+						List<OutControlledList> oClList = new ArrayList<OutControlledList>();
+						for (ControlledList clL : cl) {
+							OutControlledList oCl = new OutControlledList();
+							oCl.setKey(clL.getKey());
+							oCl.setValue(clL.getValue());
+							oClList.add(oCl);
+						}
+						oField.setOutControlledList(oClList);
 					}
-					oField.setOutControlledList(oClList);
 				}
 				oFields.add(oField);
 			}
@@ -126,15 +128,17 @@ public class Utils {
 				oField.setId(field.getId());
 				if (field.getControlledList() != null && withControlledLists) {
 					ControlledListMap clMap = pi.getControlledListMap(field.getControlledList());
-					List<ControlledList> cl = pi.getControlledList(clMap.getCl_name(), clMap.getCl_value(), clMap.getCl_key());
-					List<OutControlledList> oClList = new ArrayList<OutControlledList>();
-					for (ControlledList clL : cl) {
-						OutControlledList oCl = new OutControlledList();
-						oCl.setKey(clL.getKey());
-						oCl.setValue(clL.getValue());
-						oClList.add(oCl);
+					if (clMap != null) {
+						List<ControlledList> cl = pi.getControlledList(clMap.getCl_name(), clMap.getCl_value(), clMap.getCl_key());
+						List<OutControlledList> oClList = new ArrayList<OutControlledList>();
+						for (ControlledList clL : cl) {
+							OutControlledList oCl = new OutControlledList();
+							oCl.setKey(clL.getKey());
+							oCl.setValue(clL.getValue());
+							oClList.add(oCl);
+						}
+						oField.setOutControlledList(oClList);
 					}
-					oField.setOutControlledList(oClList);
 				}
 				oFields.add(oField);
 			}

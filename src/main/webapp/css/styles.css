@@ -20,6 +20,7 @@
 	position: relative;
 	margin-left: 25px;
 	margin-right: 25px;
+	margin-bottom: 80px;
 }
 
 .languageSelection {
@@ -100,7 +101,12 @@
 }
 
 .formFieldEntry {
-	height: 60px;
+	width: 98%;
+    float: left;
+    height: auto;
+    margin-bottom: 15px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid #cdcdcd;
 }
 
 .linkEntry {
@@ -166,3 +172,16 @@
 
 .green { color: green; }
 .red { color: red; }
+
+.sectionDivider {
+	height: 35px;
+	border-bottom: 1px solid #8f8f8f;
+    padding-top: 9px;
+    width: 95%;
+    font-weight: bolder;
+}
+
+.fieldInput {
+	margin-left: 20px;
+	float: left;
+}

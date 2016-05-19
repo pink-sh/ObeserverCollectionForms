@@ -1,4 +1,15 @@
-var observer = angular.module('observer', ['pascalprecht.translate', 'toaster', 'checklist-model']);
+var isArray=function(value){
+    if(Array.isArray){
+        return Array.isArray(value);
+    }else{
+        return Object.prototype.toString.call(value)==='[object Array]';
+    }
+}
+var isObject=function(value){
+    return value !== null&&!isArray(value) && typeof value === 'object';
+}
+
+var observer = angular.module('observer', ['pascalprecht.translate', 'toaster', 'checklist-model', 'angucomplete-alt']);
 observer.config(['$translateProvider', function ($translateProvider) {
 		$translateProvider.useUrlLoader('REST/rest_service/getLanguages/');
 		$translateProvider.preferredLanguage('en');
@@ -20,10 +31,28 @@ observer.factory("poollingFactory", function ($timeout) {
 observer.factory("repo", function () {
     function callServer(scope, http, toaster) {
     	if (!jQuery.isEmptyObject(scope.currentForm)) {
+    		var toSend = angular.copy(scope.currentForm);
+    		for (var i = 0; i < toSend.outSection.length; i++) {
+    			for (var j = 0; j < toSend.outSection[i].outField.length; j++) {
+    				var field = toSend.outSection[i].outField[j];
+    				if (field.type == 'autocomplete') {
+    					var sub = toSend.outSection[i].outField[j].value;
+    					if (isObject(sub)) {
+    						var val = sub.originalObject.key;
+    						if (val == undefined || val == null) {
+    							toSend.outSection[i].outField[j].value = null;
+    						} else {
+    							toSend.outSection[i].outField[j].value = val;
+    						}
+    					}
+    					delete toSend.outSection[i].outField[j]['placeholder'];
+    				}
+    			}
+    		}
 	    	http({
 				method: 'POST',
 				url: 'REST/rest_service/updateForm/',
-				data: scope.currentForm
+				data: toSend
 			}).then(function successCallback(response) {
 				//console.debug("Autosave");
 				toaster.pop('success', "Autosave", "Data successfully saved");
@@ -60,6 +89,7 @@ observer.controller('main-controller', ['$scope', '$translate', '$http', 'repo',
     });
 	
 	$scope.formHead = true;
+	$scope.temporary = {};
 	
 	$scope.frontEndLang = 'EN';
 	
@@ -241,10 +271,28 @@ observer.controller('main-controller', ['$scope', '$translate', '$http', 'repo',
 	}
 	
 	$scope.save = function() {
+		var toSend = angular.copy($scope.currentForm);
+		for (var i = 0; i < toSend.outSection.length; i++) {
+			for (var j = 0; j < toSend.outSection[i].outField.length; j++) {
+				var field = toSend.outSection[i].outField[j];
+				if (field.type == 'autocomplete') {
+					var sub = toSend.outSection[i].outField[j].value;
+					if (isObject(sub)) {
+						var val = sub.originalObject.key;
+						if (val == undefined || val == null) {
+							toSend.outSection[i].outField[j].value = null;
+						} else {
+							toSend.outSection[i].outField[j].value = val;
+						}
+					}
+					delete toSend.outSection[i].outField[j]['placeholder'];
+				}
+			}
+		}
 		$http({
 			method: 'POST',
 			url: 'REST/rest_service/updateForm/',
-			data: $scope.currentForm
+			data: toSend
 		}).then(function successCallback(response) {
 			toaster.pop('success', "Save", "Data successfully saved");
 		}, function errorCallback(response) {
@@ -259,6 +307,44 @@ observer.controller('main-controller', ['$scope', '$translate', '$http', 'repo',
 			  url: 'REST/rest_service/getForm/' + Id
 			}).then(function successCallback(response) {
 				console.debug(response.data);
+				for (var i = 0; i < response.data.outSection.length; i++) {
+					for (var j = 0; j < response.data.outSection[i].outField.length; j++) {
+						if (response.data.outSection[i].outField[j].type == 'date') {
+							if (response.data.outSection[i].outField[j].value != null) {
+								response.data.outSection[i].outField[j].value = new Date(response.data.outSection[i].outField[j].value);
+							}
+						}
+						else if (response.data.outSection[i].outField[j].type == 'autocomplete') {
+							var value = response.data.outSection[i].outField[j].value;
+							for (var x = 0; x < response.data.outSection[i].outField[j].outControlledList.length; x++) {
+								var cL = response.data.outSection[i].outField[j].outControlledList[x];
+								if (cL.key == value) {
+									response.data.outSection[i].outField[j].placeholder = cL.value;
+									break;
+								}
+							}
+							/*var gguid = guid();
+							response.data.outSection[i].outField[j].guid = gguid;
+							$scope.temporary[gguid] = {};
+							$scope.temporary[gguid]['data'] = []
+							for (var x = 0; x < response.data.outSection[i].outField[j].outControlledList.length; x++) {
+								$scope.temporary[gguid].data.push({label:response.data.outSection[i].outField[j].outControlledList[x].value,value:response.data.outSection[i].outField[j].outControlledList[x].key})
+							}
+							$scope.temporary[gguid].autocomplete_options = {
+									suggest: function(term) { 
+										var q = term.toLowerCase().trim();
+										var results = [];
+										for (var i = 0; i < $scope.temporary[gguid]['data'].length && results.length < 10; i++) {
+											var opt = $scope.temporary[gguid]['data'][i];
+											if (opt.label.toLowerCase().indexOf(q) === 0)
+										        results.push({ label: opt.label, value: opt.value });
+										}
+										return results; 
+									}
+							};*/
+						}
+					}
+				}
 				$scope.currentForm = response.data;
 				$scope.swapPage('form');
 				toaster.pop('success', "Load", "Form data loaded");
@@ -272,7 +358,6 @@ observer.controller('main-controller', ['$scope', '$translate', '$http', 'repo',
 		console.debug(cbName);
 		console.debug(oValue);
 		console.debug(tmpValue);
-		oValue = "CAZZO";
 	}
 	
 	}]);

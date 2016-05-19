@@ -8,6 +8,7 @@
 <link rel="stylesheet" href="css/bootstrap.min.css.map">
 <link rel="stylesheet" href="css/bootstrap-theme.min.css">
 <link rel="stylesheet" href="css/toaster.css">
+<link rel="stylesheet" href="css/angucomplete-alt.css">
 <link rel="stylesheet" href="css/styles.css">
 <script type="text/javascript" src="js/jquery-1.12.3.min.js"></script>
 <script type="text/javascript" src="js/angular.min.js"></script>
@@ -16,6 +17,7 @@
 <script type="text/javascript" src="js/toaster.js"></script>
 <script type="text/javascript" src="js/checklist-model.js"></script>
 <script type="text/javascript" src="js/observer.js"></script>
+<script type="text/javascript" src="js/angucomplete-alt.min.js"></script>
 </head>
 <body ng-app="observer" ng-cloak>
  <toaster-container toaster-options="{'time-out': 3000, 'position-class': 'toast-bottom-right'}"></toaster-container>
@@ -92,37 +94,62 @@
 				<div class='linkEntry' translate='BACKTOSECTIONLIST' ng-click="swapPage('form')"></div>
 			</div>
 			<div class='menuEntry'><div class='menuEntryText'>{{currentSection.name}}</div></div>
-			<br /><hr /><br />
+			<br />
 			<div class='formFieldEntry' ng-repeat='formField in currentSection.outField'>
-				<div style="float: left; width: 80px;">
+				<div ng-show="formField.type == 'divider'">
+					<div class="sectionDivider">
+						<span translate>{{formField.label}}</span>
+					</div>	
+				</div>
+				<div style="float: left; width: 200px;"  ng-show="formField.type != 'divider'">
 					<span translate>{{formField.label}}</span>
 					<span class="asterisc" ng-show="formField.mandatory">*</span>
 				</div>
-				<div ng-switch="formField.type">
-					<div ng-switch-when='text'>
+				<div class="fieldInput" ng-switch="formField.type">
+					<div ng-switch-when='text' class="fieldInput">
 						<input type='text' ng-model='formField.value'>
 					</div>
-					<div ng-switch-when='dropdown'>
+					<div ng-switch-when='textarea' class="fieldInput">
+						<textarea type='text' ng-model='formField.value'>{{formField.value}}</textarea>
+					</div>
+					<div ng-switch-when='dropdown' class="fieldInput">
 						<select ng-model='formField.value'>
 							<option value='NULL' translate="SELECTONE" disabled></option>
 							<option ng-repeat='cl in formField.outControlledList' value="{{cl.key}}">{{cl.value}}</option>
 						</select>
 					</div>
-					<div ng-switch-when='radio'>
-						<div ng-repeat='cl in formField.outControlledList' style="float:left;">
-							<input type="radio" name="formField.name" value="{{cl.key}}" ng-model="formField.value">{{cl.value}}
-						</div>
+					<div ng-switch-when='radio' class="fieldInput">
+						<fieldset  id="{{formField.name}}">
+							<span ng-repeat='cl in formField.outControlledList' style="float:left;">
+								<input type="radio" value="{{cl.key}}" ng-model="formField.value"  name="{{formField.name}}">{{cl.value}}</input>
+							</span>
+						</fieldset>
 					</div>
-					<div ng-switch-when='checkbox'>
+					<div ng-switch-when='checkbox' class="fieldInput">
 						<div ng-repeat='cl in formField.outControlledList' style="float:left;">
-							<!-- <input type="checkbox" name="formField.name" value="{{cl.key}}" ng-model="tmpCheckBoxes[formField.name][cl.value]" ng-click="checkBoxSwitch(formField.outControlledList, formField.name, formField.value, tmpCheckBoxes[formField.name])">{{cl.value}} -->
 							<input type="checkbox" name="formField.name" checklist-value="cl.key" checklist-model="formField.value">{{cl.value}}
 						</div>
 					</div>
-					<div ng-switch-when='multiple'>
+					<div ng-switch-when='multiple' class="fieldInput">
 						<select multiple ng-model='formField.value'>
 							<option ng-repeat='cl in formField.outControlledList' value="{{cl.key}}">{{cl.value}}</option>
 						</select>
+					</div>
+					<div ng-switch-when='date' class="fieldInput">
+						<input type="date" name="input" ng-model="formField.value"
+       						placeholder="yyyy-MM-dd"  />
+					</div>
+					<div ng-switch-when='autocomplete' class="fieldInput"	>
+						<angucomplete-alt id="aComp"
+				              placeholder="{{formField.placeholder}}"
+				              pause="300"
+				              selected-object="formField.value"
+				              local-data="formField.outControlledList"
+				              search-fields="value"
+              				  title-field="value"
+				              minlength="1"
+				              input-class="form-control form-control-small"
+				              match-class="highlight" />
 					</div>
 				</div>
 			</div>

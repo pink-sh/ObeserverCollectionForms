@@ -25,7 +25,7 @@ public class LoadEnvironment {
 		System.out.println("Checking DB Structure");
 		try {
 			System.out.println("Wiping out DB...");
-			//persistance.wipeOut();
+			persistance.wipeOut();
 		} catch (Exception ex) {
 			System.out.println("Cannot wipe out DB!");
 		}
