@@ -2,10 +2,12 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
 
 #define MyAppName "Observer Collection Forms"
-#define MyAppVersion "0.5.0"
+#define MyAppNameFallback "Observer Collection Forms Secure"
+#define MyAppVersion "0.5.3"
 #define MyAppPublisher "IOTC"
 #define MyAppURL "http://www.iotc.org"
 #define MyAppIcoName "ObserverCollectionForms.ico"
+#define MyFallBackAppStartScript "startFallback.bat"
 #define MyAppStartScript "start.bat"
 #define MyAppStopScript "stop.bat"
 #define MinJRE "1.6"
@@ -27,7 +29,9 @@ DisableProgramGroupPage=yes
 OutputBaseFilename=setup
 Compression=lzma
 SolidCompression=yes
+ArchitecturesInstallIn64BitMode=x64
 PrivilegesRequired=admin
+DefaultGroupName={#MyAppName}
 
 [Languages]
 Name: "english"; MessagesFile: "compiler:Default.isl"
@@ -46,10 +50,13 @@ Source: "ROS\Files\apache-tomcat-7.0.69_x64\*.*"; DestDir: "{localappdata}\tomca
 Source: "ROS\Files\apache-tomcat-7.0.69_x86\*.*"; DestDir: "{localappdata}\tomcat"; Check: not IsWin64; Flags: ignoreversion recursesubdirs createallsubdirs
 Source: "ROS\Files\{#MyAppStartScript}"; DestDir: "{app}"; DestName: "start.bat"; 
 Source: "ROS\Files\{#MyAppStopScript}"; DestDir: "{app}"; DestName: "stop.bat";
+Source: "ROS\Files\{#MyFallBackAppStartScript}"; DestDir: "{app}"; DestName: "startFallback.bat";
 Source: "ROS\Files\{#MyAppIcoName}"; DestDir: "{app}"
 
 [Icons]
 Name: "{commondesktop}\{#MyAppName}"; Filename: "{app}\{#MyAppStartScript}"; IconFilename: "{app}\{#MyAppIcoName}"; Tasks: desktopicon
+Name: "{group}\{#MyAppName}"; Filename: "{app}\{#MyAppStartScript}"; IconFilename: "{app}\{#MyAppIcoName}" 
+Name: "{group}\{#MyAppNameFallback}"; Filename: "{app}\{#MyFallBackAppStartScript}"; IconFilename: "{app}\{#MyAppIcoName}"
 
 [Setup]
 ChangesEnvironment=yes
